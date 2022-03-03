@@ -1,11 +1,20 @@
 
-# Dubbo Zookeeper Example Project
+# Dubbo + Zookeeper Example Project
 
 This is a quick start for Apache <a href="https://dubbo.apache.org/en/">Dubbo</a> RPC Framework using <a href="https://zookeeper.apache.org/">Zookeeper</a> as Service Registry Center.
 We are building a Dubbo provider, which has multiple instances.
 We are also having building a Dubbo consumers which communicates with the provider instances.
 
 We use Zookeeper in our Distributed System to insure high availability and performance.
+
+<table>
+<tr><td>
+<b>Important</b>: This tutorial focus on <b>Dubbo with Zookeeper</b>.
+If you just want to learn setting up <b>Dubbo with Spring Boot</b> without Zookeeper and Docker then
+check out my other repository: <a href="https://github.com/dcnis/dubbo-spring-boot-example">https://github.com/dcnis/dubbo-spring-boot-example</a>
+</td></tr>
+</table>
+
 
 ## Run application with a single command
 ```
