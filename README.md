@@ -3,7 +3,7 @@
 
 This is a quick start for Apache <a href="https://dubbo.apache.org/en/">Dubbo</a> RPC Framework using <a href="https://zookeeper.apache.org/">Zookeeper</a> as Service Registry Center.
 We are building a Dubbo provider, which has multiple instances.
-We are also having building a Dubbo consumers which communicates with the provider instances.
+We are also building a Dubbo consumers which communicates with the Dubbo provider instances.
 
 We use Zookeeper in our Distributed System to insure high availability and performance.
 
@@ -22,6 +22,7 @@ docker compose up
 ```
 This will spin up
 - zookeeper
+- dubbo-admin
 - dubbo-provider-1 (3x instances)
 - dubbo-consumer-1 (1x instance)
 
@@ -91,6 +92,7 @@ services:
     container_name: dubbo-consumer-1-0
     depends_on:
       - zookeeper
+      - dubbo-provider-1-0
     image: dubbo-consumer-1-image
     #restart: always
     ports:
@@ -98,6 +100,21 @@ services:
       - "28883:28880"
     networks:
       - dubbo-net
+
+  dubbo-admin:
+    image: apache/dubbo-admin
+    container_name: dubbo-admin
+    ports:
+      - "8091:8080"
+    networks:
+      - dubbo-net
+    environment:
+      - admin.registry.address=zookeeper://zookeeper:2181
+      - admin.config-center=zookeeper://zookeeper:2181
+      - admin.metadata-report.address=zookeeper://zookeeper:2181
+      - dubbo.admin.root.password=root
+    depends_on:
+      - zookeeper
 
 networks:
   dubbo-net:
@@ -185,3 +202,13 @@ docker run -d \
 ```
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id
 ```
+
+
+## Setting up Load-Balancing with Dubbo Admin
+
+Connect to Dubbo-Admin
+```
+http://localhost:8091/
+```
+
+Go to ```Service Governance -> Load Balance ```. Here you can create a new Load Balancing rule e.q. Round Robin, Randon or Least Active.

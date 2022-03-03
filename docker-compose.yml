@@ -55,6 +55,7 @@ services:
     container_name: dubbo-consumer-1-0
     depends_on:
       - zookeeper
+      - dubbo-provider-1-0
     image: dubbo-consumer-1-image
     #restart: always
     ports:
@@ -62,6 +63,21 @@ services:
       - "28883:28880"
     networks:
       - dubbo-net
+
+  dubbo-admin:
+    image: apache/dubbo-admin
+    container_name: dubbo-admin
+    ports:
+      - "8091:8080"
+    networks:
+      - dubbo-net
+    environment:
+      - admin.registry.address=zookeeper://zookeeper:2181
+      - admin.config-center=zookeeper://zookeeper:2181
+      - admin.metadata-report.address=zookeeper://zookeeper:2181
+      - dubbo.admin.root.password=root
+    depends_on:
+      - zookeeper
 
 networks:
   dubbo-net:
