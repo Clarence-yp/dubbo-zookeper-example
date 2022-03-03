@@ -1,23 +1,131 @@
 
 # Dubbo Zookeeper Example Project
 
-This is a quick start for Alibaba's dubbo RPC Framework using Zookeeper as Registry Server.
-We are building multiple dubbo providers, each having multiple instances in our distributed system in order to insure high availability.
-We are also having multiple consumers which are communicating with the providers.
+This is a quick start for Apache <a href="https://dubbo.apache.org/en/">Dubbo</a> RPC Framework using <a href="https://zookeeper.apache.org/">Zookeeper</a> as Service Registry Center.
+We are building a Dubbo provider, which has multiple instances.
+We are also having building a Dubbo consumers which communicates with the provider instances.
 
-You can imagine we are building a distributed system with lots of services (dubbo providers) 
-and millions of clients (dubbo consumers) which are using our system.
+We use Zookeeper in our Distributed System to insure high availability and performance.
 
-In our example we are having 3 providers. For each of them we are spinning up multiple instances later on.
-- dubbo-de.dcnis.dubbo.provider-1
-- dubbo-de.dcnis.dubbo.provider-2
-- dubbo-de.dcnis.dubbo.provider-3
+## Run application with a single command
+```
+docker compose up
+```
+This will spin up
+- zookeeper
+- dubbo-provider-1 (3x instances)
+- dubbo-consumer-1 (1x instance)
 
-We are also having multiple consumers.
-- dubbo-consumer-1
-- dubbo-consumer-2
-- dubbo-consumer-3
+## Usage
+Use a browser to connect to the dubbo consumer via ```http://localhost:8090/hello```
+and we will get a response from one of our three ```dubbo-provider-1``` instances.
 
+## Documentation
+
+### docker-compose-yml
+
+```
+version: "3.8"
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: zookeeper:3.4.9
+    ports:
+      - "2181:2181"
+    restart: always
+    networks:
+      - dubbo-net
+
+  dubbo-provider-1-0:
+    container_name: dubbo-provider-1-0
+    depends_on:
+      - zookeeper
+    image: dubbo-provider-1-image
+    #restart: always
+    ports:
+      - "8080:8080"
+      - "28880:28880"
+    networks:
+      - dubbo-net
+    environment:
+      - dubbo.registry.address=zookeeper://zookeeper:2181
+
+  dubbo-provider-1-1:
+    container_name: dubbo-provider-1-1
+    depends_on:
+      - zookeeper
+    image: dubbo-provider-1-image
+    #restart: always
+    ports:
+      - "8081:8080"
+      - "28881:28880"
+    networks:
+      - dubbo-net
+    environment:
+      - dubbo.registry.address=zookeeper://zookeeper:2181
+
+  dubbo-provider-1-2:
+    container_name: dubbo-provider-1-2
+    depends_on:
+      - zookeeper
+    image: dubbo-provider-1-image
+    #restart: always
+    ports:
+      - "8082:8080"
+      - "28882:28880"
+    networks:
+      - dubbo-net
+    environment:
+      - dubbo.registry.address=zookeeper://zookeeper:2181
+
+  dubbo-consumer-1-0:
+    container_name: dubbo-consumer-1-0
+    depends_on:
+      - zookeeper
+    image: dubbo-consumer-1-image
+    #restart: always
+    ports:
+      - "8090:8080"
+      - "28883:28880"
+    networks:
+      - dubbo-net
+
+networks:
+  dubbo-net:
+    name: dubbo-net
+    driver: bridge
+```
+
+### application.properties of dubbo provider
+Following configuration will connect the dubbo provider with the zookeeper registry center.
+```
+dubbo.application.name=dubbo-provider-1
+
+# in docker-compose.yml our zookeeper docker container is called 'zookeeper'
+zookeeper.docker.container.name=zookeeper
+
+dubbo.registry.address=zookeeper://${zookeeper.docker.container.name}:2181
+
+dubbo.registry.client=curator
+dubbo.protocol.name=dubbo
+dubbo.protocol.port=20880
+dubbo.scan.base-packages=de.dcnis.dubbo
+```
+
+### application.properties of dubbo consumer
+
+Following configuration will connect the dubbo consumer with the zookeeper registry center.
+
+```
+zookeeper.docker.container.name=zookeeper
+dubbo.application.name=dubbo-consumer-1
+dubbo.registry.address=zookeeper://${zookeeper.docker.container.name}:2181
+dubbo.consumer.timeout=3000
+```
+
+## Additional manual instructions
+
+Following commands will help to build docker images, run docker instances from those images and spin up zookeeper gui without docker compose.
 
 ## Build docker image from Dockerfile for dubbo provider
 
