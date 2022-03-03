@@ -19,10 +19,16 @@ We are also having multiple consumers.
 - dubbo-consumer-3
 
 
-## Build docker image from Dockerfile
+## Build docker image from Dockerfile for dubbo provider
 
 ```
- docker build --no-cache -f dubbo-provider-1.Dockerfile -t dubbo-provider-1-image .
+docker build --no-cache -f dubbo-provider-1.Dockerfile -t dubbo-provider-1-image .
+```
+
+## Build docker image from Dockerfile for dubbo consumer
+
+```
+docker build --no-cache -f dubbo-consumer-1.Dockerfile -t dubbo-consumer-1-image .
 ```
 
 ## Spin up dubbo provider instance
@@ -30,6 +36,13 @@ We are also having multiple consumers.
 Here we spin up an instance of ```dubbo-provider-1```
 ```
 docker run --name dubbo-provider-1-0 -d -p 8080:8080 -p 28880:28880 --link zkserver:zkserver dubbo-provider-1-image
+```
+
+## Spin up dubbo consumer instance
+
+Here we spin up an instance of ```dubbo-consumer-1```
+```
+docker run --name dubbo-consumer-1-0 -d -p 8090:8080 -p 28880:28880 --link zkserver:zkserver dubbo-consumer-1-image
 ```
 
 ## Zookeeper GUI
