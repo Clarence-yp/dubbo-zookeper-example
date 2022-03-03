@@ -15,7 +15,7 @@ COPY ./dubbo-api/pom.xml $HOME/dubbo-api/
 COPY ./dubbo-provider-1/src $HOME/dubbo-provider-1/src
 COPY ./dubbo-provider-1/pom.xml $HOME/dubbo-provider-1/
 
-RUN ["mvn", "package"]
+RUN ["mvn", "package", "-Pdubbo-provider-1"]
 
 EXPOSE 8085
 
