@@ -25,9 +25,11 @@ We are also having multiple consumers.
  docker build --no-cache -f dubbo-provider-1.Dockerfile -t dubbo-provider-1-image .
 ```
 
-## Spin up dubbo de.dcnis.dubbo.provider
+## Spin up dubbo provider instance
+
+Here we spin up an instance of ```dubbo-provider-1```
 ```
-docker run --name my-micro-server -d -p 8080:8080 -p 28880:28880  -e Dubbo_IP_TO_REGISTRY=192.168.2.2 --link zkserver:zkserver dubbo-docker-sample
+docker run --name dubbo-provider-1-0 -d -p 8080:8080 -p 28880:28880 --link zkserver:zkserver dubbo-provider-1-image
 ```
 
 ## Zookeeper GUI

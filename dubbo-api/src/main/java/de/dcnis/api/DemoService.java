@@ -1,4 +1,4 @@
-package de.dcnis.dubbo.api;
+package de.dcnis.api;
 
 public interface DemoService {
 
