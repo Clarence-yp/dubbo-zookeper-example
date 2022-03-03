@@ -7,13 +7,13 @@ WORKDIR $HOME
 COPY ./pom.xml $HOME
 RUN ["/usr/local/bin/mvn-entrypoint.sh", "mvn", "verify", "clean", "--fail-never"]
 
-# copy dubbo-api
-COPY ./dubbo-api/src $HOME/dubbo-api/src
+# copy pom.xmls
 COPY ./dubbo-api/pom.xml $HOME/dubbo-api/
-
-# copy dubbo-consumer-1
-COPY ./dubbo-consumer-1/src $HOME/dubbo-consumer-1/src
 COPY ./dubbo-consumer-1/pom.xml $HOME/dubbo-consumer-1/
+
+# copy module sources
+COPY ./dubbo-api/src $HOME/dubbo-api/src
+COPY ./dubbo-consumer-1/src $HOME/dubbo-consumer-1/src
 
 RUN ["mvn", "package", "-Pdubbo-consumer-1"]
 

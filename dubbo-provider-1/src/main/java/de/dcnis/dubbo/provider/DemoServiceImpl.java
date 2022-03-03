@@ -2,8 +2,6 @@ package de.dcnis.dubbo.provider;
 
 import de.dcnis.api.DemoService;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,8 +9,7 @@ import java.time.format.DateTimeFormatter;
 @DubboService(version = "1.0.0")
 public class DemoServiceImpl implements DemoService {
 
-    @Autowired
-    private ApplicationContext appContext;
+    private final int appId = (int) (Math.random() * 1000000000);
 
     @Override
     public String sayHello(String name) {
@@ -20,7 +17,7 @@ public class DemoServiceImpl implements DemoService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss");
         System.out.println("Provider answered " + time.format(format));
 
-        return "Hello " + name + " from Docker " + appContext.getDisplayName();
+        return "Hello " + name + " from Docker " + appId;
     }
 
 }
